@@ -4,11 +4,17 @@ import App from "./App.tsx";
 import "./index.css";
 import { Amplify } from "aws-amplify";
 import outputs from "../amplify_outputs.json";
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 
 Amplify.configure(outputs);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
+// Wrap the App component with Authenticator to provide authentication context
+
   <React.StrictMode>
-    <App />
+    <Authenticator>
+      <App />
+    </Authenticator>
   </React.StrictMode>
 );
