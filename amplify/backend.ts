@@ -5,5 +5,5 @@ import * as functions from './functions/resource';
 export const backend = defineBackend({
   auth,
   data,
-  functions,
+  ...functions,
 });
