@@ -1,62 +1,64 @@
-import { lambda } from '@aws-amplify/backend/function';
+/*
+  Must be run in the Amplify project root directory.
+  To install the Amplify backend package, run:  
+    npm install --save-dev @aws-amplify/backend
+*/
+import { defineFunction } from "@aws-amplify/backend";
 
-const gptEvaluateAnswer = lambda({
-  name: 'gptEvaluateAnswer',
-  runtime: 'python3.11',
-  entry: './amplify/functions/gptEvaluateAnswer/index.py',
-  environment: {
-    BEDROCK_REGION: 'us-east-1',
-  },
-  permissions: {
-    'bedrock:InvokeModel': ['*'],
-  },
-});
-
-const parseCourseDocument = lambda({
+const parseCourseDocument = defineFunction({
   name: 'parseCourseDocument',
-  runtime: 'python3.11',
-  entry: './amplify/functions/parseCourseDocument/index.py',
+  runtime: 'python3.11' as any,
+  entry: './parseCourseDocument/index.py',
   environment: {
     BUCKET_NAME: 'your-course-files-bucket',
   },
+  timeoutSeconds: 10,
+  memoryMB: 512,
+  /*
   permissions: {
-    's3:GetObject': ['*'],
+    's3:GetObject': ['arn:aws:s3:::your-course-files-bucket/*'],
+    'bedrock:InvokeModel': ['*'],                    
+  }*/
+ });
+
+const gptEvaluateAnswer = defineFunction({
+  name: 'gptEvaluateAnswer',
+  runtime: 'python3.11' as any,
+  entry: './gptEvaluateAnswer/index.py',
+  timeoutSeconds: 30,
+  memoryMB: 512,  
+  environment: {
+    BEDROCK_REGION: 'us-east-1',
   },
+ });
+
+const generateQuestions = defineFunction({
+  name: 'generateQuestions',
+  runtime: 'python3.11' as any,
+  entry: './generateQuestions/index.py',
+  environment: {
+    BEDROCK_REGION: 'us-east-1',
+  }
 });
 
-const generateQuestions = lambda({
-  name: 'generateQuestions',
-  runtime: 'python3.11',
-  entry: './amplify/functions/generateQuestions/index.py',
-  environment: {
-    BEDROCK_REGION: 'us-east-1',
-  },
-  permissions: {
-    'bedrock:InvokeModel': ['*'],
-  },
-});
-const imageGen = lambda({
+const imageGen = defineFunction({
   name: 'imageGen',
-  runtime: 'python3.11',
-  entry: './amplify/functions/imageGen/index.py',
+  runtime: 'python3.11' as any,
+  entry: './imageGen/index.py',
   environment: {
     BEDROCK_REGION: 'us-east-1',
-  },
-  permissions: {
-    'bedrock:InvokeModel': ['*'],
-  },
+  }
 });
-const textGen = lambda({
+
+const textGen = defineFunction({
   name: 'imageGen',
-  runtime: 'python3.11',
-  entry: './amplify/functions/textGen/index.py',
+  runtime: 'python3.11' as any,
+  entry: './textGen/index.py',
   environment: {
     BEDROCK_REGION: 'us-east-1',
-  },
-  permissions: {
-    'bedrock:InvokeModel': ['*'],
-  },
+  }
 });
+
 
 export {
   gptEvaluateAnswer,
